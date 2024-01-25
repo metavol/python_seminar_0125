@@ -1,19 +1,20 @@
 import streamlit as st
 import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
 
-st.title('お試しPythonプログラム')
+st.title('答え合わせサイト')
 st.sidebar.write("こんにちは！")
-name = st.sidebar.text_input("あなたのお名前を教えてください")
+name = st.sidebar.text_input("（任意）あなたのお名前を教えてください")
+
+if name != "":
+    st.write(f"こんにちは、{name}さん！")
 
 st.header("約数を計算します。")
 
-if name != "":
-    st.write(name+"さん")
-n = st.text_input("整数を入力してください")
+n = st.text_input("整数を入力してください。")
 
-if n.isdecimal():
+if n == "":
+    pass
+elif n.isdecimal():
     n = int(n)
 
     yakusus = []
@@ -23,6 +24,9 @@ if n.isdecimal():
 
     s = ' '.join([str(n) for n in yakusus])
 
+    if len(yakusus)==2:
+        st.write(f"{n}は素数です。")
+
     st.write(f'{n}の約数は{len(yakusus)}個あります。')
     st.write(s)
     total = np.sum(yakusus[0:-1])
@@ -30,35 +34,44 @@ if n.isdecimal():
     if total == n:
         st.write('完全数です！')
 
+else:
+    st.write("整数として認識できませんでした。")
 
-st.header("おもしろい図形を描画します。")
+st.header("英語の文字列を処理します。")
 
-n = st.text_input("整数1を入力してください(例 201)") # 200
-M = st.text_input("整数2を入力してください(例 4)") # 2
+str = st.text_area("英文を入力してください。")
 
-if n.isdecimal() and M.isdecimal():
-    n = int(n)
-    M = int(M)
+if str != "":
 
-    xx=[]
-    yy=[]
-    for i in range(n):
-        th = 2 * np.pi / n * i
-        th = - th + np.pi/2
-        xx += [np.cos(th)]
-        yy += [np.sin(th)]
+    ss = str.lower().replace(',','').replace(';','').replace('\n',' ').replace('\r','').split(' ')
+    
 
-    print(n, M)
-    fig,ax = plt.subplots()
+    mlen = 0
+    mlen_str = ""
+    for s in ss:
+        if mlen < len(s):
+            mlen = len(s)
+            mlen_str = s
 
-    for i in range(n):
-        j = (i + 1) % n
-        ax.plot([xx[i],xx[j]],[yy[i],yy[j]],c='black')
 
-    for i in range(n):
-        j = (i * M) % n
-        ax.plot([xx[i],xx[j]],[yy[i],yy[j]],c='blue')
+    D = {}
+    for s in ss:
+        if s in D.keys():
+            D[s] += 1
+        else:
+            D[s] = 1
 
-    ax.set_aspect('equal')
-    st.pyplot(fig)
+    L = sorted(D.items(), key=lambda x:x[1], reverse=True)
+
+    st.write(f"この文字列には{len(ss)}個の単語が含まれています。")
+    st.write(f"登場する単語は{len(D)}種類です。")
+    st.write(f"最長の単語は{mlen_str}で、{mlen}文字から成ります。")
+
+    st.write("登場回数の多い順に単語を並べると、")
+
+    for l in L:
+        st.write(l[0],l[1])
+
+
+
 
