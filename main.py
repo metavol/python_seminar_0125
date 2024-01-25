@@ -26,6 +26,9 @@ elif n.isdecimal():
 
     if len(yakusus)==2:
         st.write(f"{n}は素数です。")
+    else:
+        st.write(f"{n}は素数ではありません。")
+
 
     st.write(f'{n}の約数は{len(yakusus)}個あります。')
     st.write(s)
